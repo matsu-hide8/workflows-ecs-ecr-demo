@@ -1,0 +1,22 @@
+[
+    {
+      "volumesFrom": [],
+      "memory": 300,
+      "portMappings": [
+        {
+          "hostPort": 8080,
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "entryPoint": [],
+      "mountPoints": [],
+      "name": "todo-demo",
+      "environment": [],
+      "links": [],
+      "image": "694210971302.dkr.ecr.us-east-1.amazonaws.com/workflows-demo:deploy-to-aws",
+      "command": [],
+      "cpu": 10
+    }
+]

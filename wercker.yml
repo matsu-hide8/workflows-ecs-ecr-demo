@@ -1,0 +1,97 @@
+box: node:4-slim
+
+dev:
+  steps:
+    - script:
+        name: setup node env
+        code: |
+          export NODE_ENV=development
+
+    - npm-install
+
+    - internal/watch:
+        code: npm start
+
+initial-build:
+  steps:
+    - install-packages:
+        packages: bzip2
+
+    - script:
+        name: setup node env
+        code: |
+          export NODE_ENV=development
+
+    - npm-install
+
+tests:
+  steps:
+    - install-packages:
+        packages: libfreetype6 libfontconfig
+
+    - script:
+        name: setup node env
+        code: |
+          export NODE_ENV=development
+
+    - script:
+        name: run tests
+        code: |
+          npm test
+
+release-build:
+  steps:
+    - script:
+        name: npm rebuild
+        code: |
+          npm rebuild
+
+    - script:
+        name: build release code
+        code: |
+          npm run build
+          mv ./build/* $WERCKER_OUTPUT_DIR
+          mv workflows-demo-task-definition.json $WERCKER_OUTPUT_DIR
+
+push-debug-ecr:
+  steps:
+    - internal/docker-push:
+        aws-access-key: $AWS_ACCESS_KEY_ID
+        aws-secret-key: $AWS_SECRET_ACCESS_KEY
+        aws-region: us-east-1
+        aws-registry-id: $AWS_REGISTRY_ID
+        repository: workflows-demo
+        tag: debug-$WERCKER_BRANCH_NAME
+
+push-release-ecr:
+  box:
+    id: nginx:alpine
+    cmd: /bin/sh
+  steps:
+    - script:
+        name: mv static files
+        code: |
+          rm -rf /usr/share/nginx/html/*
+          cp -Rp $WERCKER_SOURCE_DIR/* /usr/share/nginx/html
+
+    - internal/docker-push:
+        disable-sync: true
+        aws-access-key: $AWS_ACCESS_KEY_ID
+        aws-secret-key: $AWS_SECRET_ACCESS_KEY
+        aws-region: us-east-1
+        aws-registry-id: $AWS_REGISTRY_ID
+        repository: workflows-demo
+        tag: $WERCKER_GIT_BRANCH
+        cmd: nginx -g 'daemon off;'
+
+deploy-to-ecs:
+  box: python:2.7-slim
+  steps:
+    - 1science/aws-ecs:
+        key: $AWS_ACCESS_KEY
+        secret: $AWS_SECRET_ACCESS_KEY
+        cluster-name: workflows-demo
+        service-name: workflows-demo-service
+        task-definition-name: workflows-demo
+        task-definition-file: $WERCKER_SOURCE_DIR/workflows-demo-task-definition.json
+
