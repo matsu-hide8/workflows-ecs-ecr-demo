@@ -1,4 +1,4 @@
-##  Wercker Workflows, Quay and Kubernetes sample application
+##  Wercker Workflows, Amazon ECR and ECS sample application
 
 Sample Todo application that showcases [Wercker Workflows](http://wercker.com/workflows/) in action alongside [AWS ECR](https://aws.amazon.com/ecr/) and [AWS ECS](https://aws.amazon.com/ecs/)
 
