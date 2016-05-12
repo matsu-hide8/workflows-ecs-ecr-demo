@@ -11,6 +11,7 @@ dev:
 
     - internal/watch:
         code: npm start
+        reload: true
 
 initial-build:
   steps:
@@ -61,6 +62,7 @@ push-debug-ecr:
         aws-region: us-east-1
         aws-registry-id: $AWS_REGISTRY_ID
         repository: workflows-demo
+        ports: 8000
         tag: debug-$WERCKER_BRANCH_NAME
 
 push-release-ecr:
@@ -94,4 +96,3 @@ deploy-to-ecs:
         service-name: workflows-demo-service
         task-definition-name: workflows-demo
         task-definition-file: $WERCKER_SOURCE_DIR/workflows-demo-task-definition.json
-
