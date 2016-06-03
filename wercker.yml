@@ -52,7 +52,7 @@ release-build:
         code: |
           npm run build
           mv ./build/* $WERCKER_OUTPUT_DIR
-          mv workflows-demo-task-definition.json $WERCKER_OUTPUT_DIR
+          mv template.sh $WERCKER_OUTPUT_DIR
 
 push-debug-ecr:
   steps:
@@ -93,7 +93,7 @@ deploy-to-ecs:
   steps:
     - script:
       name: template
-      code: $WERCKER_SOURCE_DIR/template.sh
+      code: ./template.sh
     - 1science/aws-ecs:
         key: $AWS_ACCESS_KEY_ID
         secret: $AWS_SECRET_ACCESS_KEY
