@@ -1,3 +1,5 @@
+#!/bin/bash
+cat > workflows-demo-task-definition.json <<EOF
 [
     {
       "volumesFrom": [],
@@ -15,8 +17,9 @@
       "name": "todo-demo",
       "environment": [],
       "links": [],
-      "image": "694210971302.dkr.ecr.us-east-1.amazonaws.com/workflows-demo:deploy-to-aws/workflows-demo:",
+      "image": "$AWS_REGISTRY_URL/workflows-demo:$WERCKER_BRANCH_NAME",
       "command": [],
       "cpu": 10
     }
 ]
+EOF
